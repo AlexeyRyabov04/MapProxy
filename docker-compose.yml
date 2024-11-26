@@ -1,0 +1,51 @@
+version: '3.4'
+
+services:
+  mapproxy:
+    image: ${DOCKER_REGISTRY-}mapproxy
+    build:
+      context: .
+      dockerfile: MapProxy/Dockerfile
+    ports:
+      - "5092:80"
+      - "7023:443"
+    environment:
+      ASPNETCORE_URLS: "http://+"
+      ASPNETCORE_HTTPS_PORT: "7023"
+      ASPNETCORE_HTTP_PORTS: "5092"
+      ASPNETCORE_ENVIRONMENT: "Development"
+    depends_on:
+      - redis
+      - postgres 
+
+  postgres:
+    image: postgres
+    container_name: postgres 
+    environment:
+      - POSTGRES_DB=MapProxyDB
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12345678
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgresdata:/docker-entrypoint-initdb.d
+    
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: react_app
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./client/.env
+    restart: unless-stopped
+
+  redis: 
+    image: redis:latest
+    container_name: redis
+    restart: always
+    ports: 
+      - "6379:6379"
+    volumes: 
+      - .redisdata:/data
