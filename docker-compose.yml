@@ -49,3 +49,11 @@ services:
       - "6379:6379"
     volumes: 
       - .redisdata:/data
+
+  apiclient:
+    image: apiclient-react
+    build:
+      context: 
+        ./apiclient
+    ports:
+      - "3005:80"
