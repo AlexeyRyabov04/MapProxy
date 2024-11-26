@@ -1,1 +1,1 @@
-Для запуска API клиента (apiclient) для изменения правил доступа необходимо выполнить в папке npm install, затем npm start. Остальное через docker-compose up.
+В терминале перейти к папке, где находится файл docker-compose.yml. Ввести docker-compose up.
